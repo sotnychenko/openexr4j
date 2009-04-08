@@ -23,15 +23,15 @@ The goal for release 1.0 is to provide reading and writing access to those OpenE
   * PXR24 compression (lossy)
   * RLE compression (lossless)
   * B44 compression (lossy)
-  * 1.2.CR
-  * 1.2.GA
+  * 1.1.CR
+  * 1.1.GA
 
 The goal for release 1.2 is to complete access to compressed OpenEXR files.
 
 ----
 
   * multi-threading I/O.
-  * 1.4.CR
-  * 1.4.GA
+  * 1.2.CR
+  * 1.2.GA
 
 The goal for release 1.4 is to complete the functionality provided by ilmbase-1.0.1 + openexr-1.6.1.
