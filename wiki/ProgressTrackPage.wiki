@@ -1,9 +1,0 @@
-|| *artifact* || *target* || *actual* ||
-||16-bit floating-point data type||TBD||||
-||math utilities||TBD||||
-||error handling fundamentals||TBD||||
-||file I/O fundamentals||TBD||||
-||OpenEXR terms & concept implementation||TBD||||
-||OpenEXR file header||TBD||||
-||OpenEXR scanline format||TBD||||
-||OpenEXR tile format||TBD||||
