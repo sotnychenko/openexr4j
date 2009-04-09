@@ -1,7 +1,7 @@
 #summary Cycle One Progress Track Page
 
 || *artifact* || *target* || *actual* ||
-||16-bit floating-point data type||TBD||||
+||16-bit floating-point data type||Apr.18, 09||||
 ||math utilities||TBD||||
 ||error handling fundamentals||TBD||||
 ||file I/O fundamentals||TBD||||
