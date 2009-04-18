@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="openexr4j" default="jar">
+
+	<property name="lib.dir" value="lib" />
+	<property name="etc.dir" value="etc" />
+	<property name="stylesheets.dir" value="${etc.dir}/stylesheets" />
+
+	<property name="main.src.dir" value="src/main/java" />
+	<property name="main.resources.dir" value="src/main/resources" />
+	<property name="test.src.dir" value="src/test/java" />
+	<property name="test.resources.dir" value="src/test/resources" />
+	
+	<property name="build.dir" value="build" />
+	<property name="main.classes.dir" value="${build.dir}/classes" />
+	<property name="test.classes.dir" value="${build.dir}/test-classes" />
+	<property name="test.report.dir" value="${build.dir}/report" />
+	
+	<target name="prepare-build">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${main.classes.dir}" />
+		<mkdir dir="${test.classes.dir}" />
+	</target>
+
+	<target name="clean-build" description="">
+		<delete dir="${main.classes.dir}" />
+		<delete dir="${test.classes.dir}" />
+		<delete dir="${test.report.dir}" />
+	</target>
+	
+	<property name="javac.debug" value="true" />
+	<property name="javac.debuglevel" value="lines,vars,source" />
+	<property name="javac.encoding" value="utf-8" />
+	<property name="javac.source" value="1.6" />
+	<property name="javac.nowarn" value="true" />
+
+	<presetdef name="main.javac">
+		<javac srcdir="${main.src.dir}" destdir="${main.classes.dir}"
+			debug="${javac.debug}" debuglevel="${javac.debuglevel}" source="${javac.source}"
+			nowarn="${javac.nowarn}" encoding="${javac.encoding}">
+			<classpath refid="build.classpath" />
+		</javac>
+	</presetdef>
+	<presetdef name="test.javac">
+		<main.javac srcdir="${test.src.dir}" destdir="${test.classes.dir}" />
+	</presetdef>
+
+	<target name="compile" depends="prepare-build">
+		<path id="build.classpath">
+			<fileset dir="${lib.dir}" />
+		</path>
+		<main.javac>
+			<classpath refid="build.classpath" />
+		</main.javac>
+	</target>
+
+	<target name="compile-test" depends="compile">
+		<test.javac>
+			<classpath>
+				<fileset dir="${lib.dir}" />
+				<pathelement location="${main.classes.dir}" />
+			</classpath>
+		</test.javac>
+	</target>
+	
+	<property name="junit.printsummary" value="true" />
+	<property name="junit.haltonerror" value="false" />
+	<property name="junit.haltonfailure" value="false" />
+	<property name="junit.fork" value="true" />
+
+	<presetdef name="def.junit">
+		<junit printsummary="${junit.printsummary}" haltonerror="${junit.haltonerror}"
+			haltonfailure="${junit.haltonfailure}" fork="${junit.fork}">
+			<formatter type="plain" />
+			<formatter type="xml" />
+		</junit>
+	</presetdef>
+	<macrodef name="unit.test">
+		<attribute name="report.dir" />
+		<element name="filesets" optional="false" />
+		<element name="classpaths" optional="false" />
+		<sequential>
+			<copy todir="${test.classes.dir}">
+				<fileset dir="${main.classes.dir}" />
+				<fileset dir="${test.resources.dir}" />
+			</copy>
+			<delete dir="@{report.dir}" />
+			<mkdir dir="@{report.dir}" />
+			<def.junit>
+				<classpath>
+					<classpaths />
+				</classpath>
+
+				<batchtest todir="@{report.dir}">
+					<filesets />
+				</batchtest>
+			</def.junit>
+			<mkdir dir="@{report.dir}/html" />
+			<junitreport todir="@{report.dir}">
+				<fileset dir="@{report.dir}">
+					<include name="TEST-*.xml" />
+				</fileset>
+				<report format="frames" todir="@{report.dir}/html" styledir="${stylesheets.dir}" />
+			</junitreport>
+		</sequential>
+	</macrodef>
+
+	<target name="test" depends="compile-test" description="">
+		<unit.test report.dir="${test.report.dir}">
+			<classpaths>
+				<pathelement location="${test.classes.dir}" />
+				<fileset dir="${lib.dir}" />
+
+				<pathelement location="${main.classes.dir}" />
+			</classpaths>
+			<filesets>
+				<fileset dir="${test.classes.dir}">
+					<include name="**/*TestCase.class" />
+				</fileset>
+			</filesets>
+		</unit.test>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="${build.dir}/${ant.project.name}.jar" basedir="${main.classes.dir}" />
+	</target>
+
+	<target name="clean-all">
+		<delete dir="${build.dir}" />
+	</target>
+</project>
